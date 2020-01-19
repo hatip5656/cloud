@@ -1,0 +1,37 @@
+server:
+  port: 9101
+
+spring:
+  application:
+    name: eureka
+
+eureka:
+  instance:
+    hostname: localhost
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 5
+  server:
+    enableSelfPreservation: false
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 5
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: ALWAYS
+
+logging:
+  level:
+    ROOT: INFO
+    com.bulutmd.servicular: DEBUG

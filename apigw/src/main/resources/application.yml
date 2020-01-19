@@ -1,0 +1,32 @@
+server:
+  port: 9100
+  servlet:
+    session:
+      cookie:
+        http-only: true
+spring:
+  application:
+    name: apigw
+  jackson:
+    default-property-inclusion: non_null
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+management:
+  endpoint.gateway.enabled: true
+  endpoints:
+    web.exposure.include: gateway
+
+eureka:
+  client:
+    instance-info-replication-interval-seconds: 1
+    registry-fetch-interval-seconds: 1
+    serviceUrl:
+      defaultZone: http://localhost:9101/eureka/
+logging:
+  level:
+    ROOT: INFO
+    com.bulutmd.servicular: DEBUG

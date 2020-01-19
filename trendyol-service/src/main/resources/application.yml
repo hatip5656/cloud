@@ -1,0 +1,35 @@
+server:
+  port: 9103
+
+spring:
+  profiles: default
+  application:
+    name: trendyol-service
+  datasource:
+      url: jdbc:h2:file:./trendyol
+      username: sa
+      password: root
+      driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    open-in-view: true
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+      path: /db-console
+eureka:
+  client:
+    instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 5
+    serviceUrl:
+      defaultZone: http://localhost:9101/eureka/
+
+logging:
+  level:
+    ROOT: INFO
+    com.bulutmd.servicular: DEBUG

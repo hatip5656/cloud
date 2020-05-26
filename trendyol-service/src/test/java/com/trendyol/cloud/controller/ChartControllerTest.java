@@ -39,8 +39,6 @@ public class ChartControllerTest {
     CategoryRepository categoryRepo;
     @Autowired
     ChartController chartController;
-    @Autowired
-    JdbcTemplate jdbcTemplate;
 
 
     @Test

@@ -7,16 +7,12 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,31 +27,18 @@ public class ChartControllerTest {
     public ChartControllerTest() {
     }
 
-    @Mock
-    HttpServletRequest request;
-    @Mock
-    HttpServletResponse response;
-    @Spy
     @Autowired
     ProductRepository productRepo;
-    @Spy
-    @Autowired
-    CampaignRepository campaignRepo;
-    @Spy
     @Autowired
     ChartsProductRepository chartsProductRepo;
-    @Spy
     @Autowired
     ChartRepository chartRepo;
-    @Spy
     @Autowired
     CouponRepository couponRepo;
-    @Spy
     @Autowired
     CategoryRepository categoryRepo;
     @Autowired
     ChartController chartController;
-
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -77,16 +60,8 @@ public class ChartControllerTest {
         Chart chart = new Chart();
         chart.setProductList(chartsProducts);
         ResponsePojo result = chartController.create(chart);
-        try {
-            Assertions.assertEquals(10, ((Chart) result.getResponseBody()).getAmount());
-        } finally {
-            chartRepo.delete((Chart) result.getResponseBody());
-            jdbcTemplate.execute("DELETE from CHART_PRODUCTLIST where CHART_ID=" + chart.getId());
-            chartsProductRepo.delete(chartsProduct);
-            productRepo.delete(product);
-            jdbcTemplate.execute("DELETE from PRODUCT_CATEGORIES where PRODUCT_ID=" + product.getId());
-            categoryRepo.delete(category);
-        }
+        Assertions.assertEquals(10, ((Chart) result.getResponseBody()).getAmount());
+
     }
 
     @Test
@@ -108,16 +83,8 @@ public class ChartControllerTest {
         chart = ((Chart) chartController.create(chart).getResponseBody());
         Chart chart1 = chart;
         ResponsePojo result = chartController.addToChart(chart1);
-        try {
-            Assertions.assertEquals(chart.getAmount() * 2, ((Chart) result.getResponseBody()).getAmount());
-        } finally {
-            chartRepo.delete((Chart) result.getResponseBody());
-            jdbcTemplate.execute("DELETE from CHART_PRODUCTLIST where CHART_ID=" + chart.getId());
-            chartsProductRepo.delete(chartsProduct);
-            productRepo.delete(product);
-            jdbcTemplate.execute("DELETE from PRODUCT_CATEGORIES where PRODUCT_ID=" + product.getId());
-            categoryRepo.delete(category);
-        }
+
+        Assertions.assertEquals(chart.getAmount() * 2, ((Chart) result.getResponseBody()).getAmount());
     }
 
     @Test
@@ -144,17 +111,7 @@ public class ChartControllerTest {
         couponApplyPojo.setCouponId(coupon.getId());
         ResponsePojo result = chartController.applyCoupon(couponApplyPojo);
 
-        try {
-            Assertions.assertEquals(8, ((Chart) result.getResponseBody()).getAmount());
-        } finally {
-            chartRepo.delete((Chart) result.getResponseBody());
-            jdbcTemplate.execute("DELETE from CHART_PRODUCTLIST where CHART_ID=" + chart.getId());
-            chartsProductRepo.delete(chartsProduct);
-            productRepo.delete(product);
-            jdbcTemplate.execute("DELETE from PRODUCT_CATEGORIES where PRODUCT_ID=" + product.getId());
-            categoryRepo.delete(category);
-            couponRepo.delete(coupon);
-        }
+        Assertions.assertEquals(8, ((Chart) result.getResponseBody()).getAmount());
     }
 
     @Test
@@ -182,16 +139,8 @@ public class ChartControllerTest {
         chart.setProductList(chartsProducts);
         ResponsePojo chart1 = chartController.create(chart);
         ResponsePojo result = chartController.delete(((Chart) chart1.getResponseBody()));
-        try {
-            Assertions.assertEquals("Chart with ID: " + ((Chart) chart1.getResponseBody()).getId() + " is deleted.", result.getResponseBody());
-        } finally {
-            chartRepo.delete(chart);
-            jdbcTemplate.execute("DELETE from CHART_PRODUCTLIST where CHART_ID=" + chart.getId());
-            chartsProductRepo.delete(chartsProduct);
-            productRepo.delete(product);
-            jdbcTemplate.execute("DELETE from PRODUCT_CATEGORIES where PRODUCT_ID=" + product.getId());
-            categoryRepo.delete(category);
-        }
+
+        Assertions.assertEquals("Chart with ID: " + ((Chart) chart1.getResponseBody()).getId() + " is deleted.", result.getResponseBody());
     }
 
 

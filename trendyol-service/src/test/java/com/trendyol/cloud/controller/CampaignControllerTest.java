@@ -7,13 +7,14 @@ import com.trendyol.cloud.model.DiscountType;
 import com.trendyol.cloud.model.ResponsePojo;
 import com.trendyol.cloud.repository.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,10 @@ import java.util.List;
  ************************/
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class CampaignControllerTest {
+@ActiveProfiles(profiles = "localtest")
+public class CampaignControllerTest {
+    public CampaignControllerTest() {
+    }
 
     @Mock
     HttpServletRequest request;
@@ -55,7 +59,8 @@ class CampaignControllerTest {
 
 
     @Test
-    void testCreate() {
+    @Order(1)
+    public void testCreate() {
         Category category = new Category();
         category.setId(1);
         category.setTitle("Technology");
@@ -70,18 +75,20 @@ class CampaignControllerTest {
 
 
     @Test
-    void testList() {
+    @Order(2)
+    public void testList() {
         ResponsePojo result = campaignController.list();
         List<Campaign> awaitining = campaignRepo.findAll();
         Assertions.assertEquals(new ResponsePojo(awaitining), result);
     }
 
     @Test
-    void testDelete() {
+    @Order(3)
+    public void testDelete() {
         Campaign campaign = new Campaign();
         campaign.setId(9999);
         ResponsePojo result = campaignController.delete(campaign);
-        Assertions.assertEquals("Campaign with ID: "+ campaign.getId() +" is deleted.", result.getResponseBody());
+        Assertions.assertEquals("Campaign with ID: " + campaign.getId() + " is deleted.", result.getResponseBody());
     }
 
 

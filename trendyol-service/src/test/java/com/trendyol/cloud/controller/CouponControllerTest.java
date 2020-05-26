@@ -1,30 +1,23 @@
-package com.trendyol.cloud.tests;
+package com.trendyol.cloud.controller;
 
-import com.trendyol.cloud.controller.ChartController;
-import com.trendyol.cloud.controller.CouponController;
-import com.trendyol.cloud.model.Category;
 import com.trendyol.cloud.model.Coupon;
 import com.trendyol.cloud.model.DiscountType;
 import com.trendyol.cloud.model.ResponsePojo;
 import com.trendyol.cloud.repository.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.ArrayList;
-
-import static org.mockito.Mockito.*;
 
 /************************
  *    18.01.2020  *
@@ -32,7 +25,11 @@ import static org.mockito.Mockito.*;
  ************************/
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class CouponControllerTest {
+@ActiveProfiles(profiles = "localtest")
+public class CouponControllerTest {
+    public CouponControllerTest() {
+    }
+
     @Mock
     HttpServletRequest request;
     @Mock
@@ -59,7 +56,8 @@ class CouponControllerTest {
     CouponController couponController;
 
     @Test
-    void testCreate() {
+    @Order(1)
+    public void testCreate() {
         Coupon coupon = new Coupon(1d, 10d, DiscountType.RATE);
         ResponsePojo result = couponController.create(coupon);
         try {
@@ -70,23 +68,23 @@ class CouponControllerTest {
     }
 
     @Test
-    void testDelete() {
-        Coupon coupon = new Coupon(1d, 10d, DiscountType.RATE);
-        coupon = ((Coupon) couponController.create(coupon).getResponseBody());
-        ResponsePojo result = couponController.delete(coupon);
-        try {
-            Assertions.assertEquals("Coupon with ID: "+ coupon.getId() +" is deleted.", result.getResponseBody());
-        } finally {
-            couponRepo.delete(coupon);
-        }
-    }
-
-    @Test
-    void testList() {
+    @Order(2)
+    public void testList() {
         ResponsePojo result = couponController.list();
         Assertions.assertEquals(ArrayList.class, result.getResponseBody().getClass());
     }
 
+    @Test
+    @Order(3)
+    public void testDelete() {
+        Coupon coupon = new Coupon(1d, 10d, DiscountType.RATE);
+        coupon = ((Coupon) couponController.create(coupon).getResponseBody());
+        ResponsePojo result = couponController.delete(coupon);
+        try {
+            Assertions.assertEquals("Coupon with ID: " + coupon.getId() + " is deleted.", result.getResponseBody());
+        } finally {
+            couponRepo.delete(coupon);
+        }
+    }
 }
 
-//Generated with love by TestMe :) Please report issues and submit feature requests at: http://weirddev.com/forum#!/testme

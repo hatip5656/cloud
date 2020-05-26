@@ -44,4 +44,4 @@ docker run --rm --name trendyol-service -p 9103:9103 --net trendyol-network poc/
 # Project UI's #
  Eureka UI *[__http://localhost:9101/__](http://localhost:9101/)* <br>
  Swagger UI *[__http://localhost:9100/trendyol-service/swagger-ui.html__](http://localhost:9100/trendyol-service/swagger-ui.html)* <br>
- Database Console UI *[__http://localhost:9100/trendyol-service/db-console/__](http://localhost:9100/trendyol-service/db-console/)*<br>
+ Database Console UI *[__http://localhost:9100/trendyol-service/db-console/__](http://localhost:9100/trendyol-service/db-console/)* <br>

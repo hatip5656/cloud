@@ -1,23 +1,23 @@
-package com.trendyol.cloud.tests;
+package com.trendyol.cloud.controller;
 
-import com.trendyol.cloud.controller.ChartController;
 import com.trendyol.cloud.model.*;
 import com.trendyol.cloud.pojo.CouponApplyPojo;
 import com.trendyol.cloud.repository.*;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /************************
@@ -26,7 +26,11 @@ import java.util.List;
  ************************/
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class ChartControllerTest {
+@ActiveProfiles(profiles = "localtest")
+public class ChartControllerTest {
+    public ChartControllerTest() {
+    }
+
     @Mock
     HttpServletRequest request;
     @Mock
@@ -57,7 +61,8 @@ class ChartControllerTest {
 
 
     @Test
-    void testCreate() {
+    @Order(1)
+    public void testCreate() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -85,7 +90,8 @@ class ChartControllerTest {
     }
 
     @Test
-    void testAddToChart() {
+    @Order(2)
+    public void testAddToChart() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -103,7 +109,7 @@ class ChartControllerTest {
         Chart chart1 = chart;
         ResponsePojo result = chartController.addToChart(chart1);
         try {
-            Assertions.assertEquals(chart.getAmount()*2, ((Chart) result.getResponseBody()).getAmount());
+            Assertions.assertEquals(chart.getAmount() * 2, ((Chart) result.getResponseBody()).getAmount());
         } finally {
             chartRepo.delete((Chart) result.getResponseBody());
             jdbcTemplate.execute("DELETE from CHART_PRODUCTLIST where CHART_ID=" + chart.getId());
@@ -115,7 +121,8 @@ class ChartControllerTest {
     }
 
     @Test
-    void testApplyCoupon() {
+    @Order(3)
+    public void testApplyCoupon() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -130,7 +137,7 @@ class ChartControllerTest {
         Chart chart = new Chart();
         chart.setProductList(chartsProducts);
         chart = ((Chart) chartController.create(chart).getResponseBody());
-        Coupon coupon = new Coupon(10,2,DiscountType.AMOUNT);
+        Coupon coupon = new Coupon(10, 2, DiscountType.AMOUNT);
         coupon = couponRepo.saveAndFlush(coupon);
         CouponApplyPojo couponApplyPojo = new CouponApplyPojo();
         couponApplyPojo.setChartId(chart.getId());
@@ -151,7 +158,15 @@ class ChartControllerTest {
     }
 
     @Test
-    void testDelete() {
+    @Order(4)
+    public void testList() {
+        ResponsePojo result = chartController.list();
+        Assertions.assertEquals(ArrayList.class, result.getResponseBody().getClass());
+    }
+
+    @Test
+    @Order(5)
+    public void testDelete() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -179,10 +194,5 @@ class ChartControllerTest {
         }
     }
 
-    @Test
-    void testList() {
-        ResponsePojo result = chartController.list();
-        Assertions.assertEquals(ArrayList.class, result.getResponseBody().getClass());
-    }
 
 }

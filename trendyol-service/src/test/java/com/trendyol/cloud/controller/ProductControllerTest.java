@@ -1,30 +1,24 @@
-package com.trendyol.cloud.tests;
+package com.trendyol.cloud.controller;
 
-import com.trendyol.cloud.controller.ProductController;
 import com.trendyol.cloud.model.Category;
 import com.trendyol.cloud.model.Product;
 import com.trendyol.cloud.model.ResponsePojo;
 import com.trendyol.cloud.repository.*;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 /************************
  *    18.01.2020  *
@@ -32,7 +26,11 @@ import static org.mockito.Mockito.*;
  ************************/
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class ProductControllerTest {
+@ActiveProfiles(profiles = "localtest")
+public class ProductControllerTest {
+    public ProductControllerTest() {
+    }
+
     @Mock
     HttpServletRequest request;
     @Mock
@@ -59,9 +57,9 @@ class ProductControllerTest {
     ProductController productController;
 
 
-
     @Test
-    void testCreate() {
+    @Order(1)
+    public void testCreate() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -76,8 +74,17 @@ class ProductControllerTest {
         }
     }
 
+
     @Test
-    void testDelete() {
+    @Order(2)
+    public void testList() {
+        ResponsePojo result = productController.list();
+        Assertions.assertEquals(ArrayList.class, result.getResponseBody().getClass());
+    }
+
+    @Test
+    @Order(3)
+    public void testDelete() {
         Category category = new Category();
         category.setTitle("Test");
         category = categoryRepo.saveAndFlush(category);
@@ -88,16 +95,10 @@ class ProductControllerTest {
 
         ResponsePojo result = productController.delete(product);
         try {
-            Assertions.assertEquals("Product with ID: "+ product.getId() +" is deleted.", result.getResponseBody());
+            Assertions.assertEquals("Product with ID: " + product.getId() + " is deleted.", result.getResponseBody());
         } finally {
             productRepo.delete(product);
         }
-    }
-
-    @Test
-    void testList() {
-        ResponsePojo result = productController.list();
-        Assertions.assertEquals(ArrayList.class, result.getResponseBody().getClass());
     }
 
 }

@@ -33,7 +33,7 @@ eureka:
 logging:
   level:
     ROOT: INFO
-    com.bulutmd.servicular: DEBUG
+    com.cloud.servicular: DEBUG
 
 ---
 #------Local Test with in memory database -------------##

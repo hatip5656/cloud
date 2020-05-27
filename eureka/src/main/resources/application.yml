@@ -34,4 +34,4 @@ management:
 logging:
   level:
     ROOT: INFO
-    com.bulutmd.servicular: DEBUG
+    com.cloud.servicular: DEBUG
